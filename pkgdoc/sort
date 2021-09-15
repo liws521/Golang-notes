@@ -1,0 +1,5 @@
+- sort.Slice
+    - Go 1.8 之后的版本, Go语言在sort包中提高了sort.Slice()函数进行更为简便的排序方法
+    - 只要求传入需要排序的数据, 以及一个排序时对元素的回调函数
+    - 比如对[][]int类型排序
+    - sort.Slice(arr, func(i, j) bool {return arr[i][0] < arr[j][0]})
