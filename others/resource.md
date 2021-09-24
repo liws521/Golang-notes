@@ -20,3 +20,10 @@ https://books.studygolang.com/gopl-zh/
 [learn-go-with-tests](https://github.com/quii/learn-go-with-tests)
 
 [RoadMap](https://www.golangroadmap.com/)
+
+[The Go Programming Language Specification](https://golang.google.cn/ref/spec)
+
+# Golang基础
+- [菜鸟教程](https://www.runoob.com/go/go-tutorial.html)
+
+https://www.topgoer.cn/

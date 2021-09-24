@@ -1,5 +1,6 @@
-defer
-=== 
+https://www.golangroadmap.com/books/goexpert/defer.html#_1-%E5%89%8D%E8%A8%80
+
+# defer
 
 ## 1. 前言
 - defer语句用于延迟函数的调用，每次defer都会把一个函数压入栈中，函数返回前再把延迟的函数取出并执行。
@@ -8,34 +9,31 @@ defer
 - 其实官方说明的defer的三个原则很清楚，本节试图汇总defer的使用场景并做简单说明。
 
 ## 2. 热身
-- 按照惯例，我们看几个有意思的题目，用于检验对defer的了解程度。
+- 按照惯例，我们看几个有意思的题目，用于检验对defer的了解程度
+
 ### 2.1 题目一
 - 下面函数输出结果是什么？
 ```go
 func deferFuncParameter() {
     var aInt = 1
-
     defer fmt.Println(aInt)
-
     aInt = 2
     return
 }
 ```
 - 题目说明： 函数deferFuncParameter()定义一个整型变量并初始化为1，然后使用defer语句打印出变量值，最后修改变量值为2.
 - 参考答案： 输出1。延迟函数fmt.Println(aInt)的参数在defer语句出现时就已经确定了，所以无论后面如何修改aInt变量都不会影响延迟函数。
+
 ### 2.2 题目二
 - 下面程序输出什么？
 ```go
 package main
-
 import "fmt"
-
 func printArray(array *[3]int) {
     for i := range array {
         fmt.Println(array[i])
     }
 }
-
 func deferFuncParameter() {
     var aArray = [3]int{1, 2, 3}
 
@@ -44,7 +42,6 @@ func deferFuncParameter() {
     aArray[0] = 10
     return
 }
-
 func main() {
     deferFuncParameter()
 }
@@ -56,20 +53,19 @@ func main() {
 ```go
 func deferFuncReturn() (result int) {
     i := 1
-
     defer func() {
        result++
     }()
-
     return i
 }
 ```
 - 函数说明： 函数拥有一个具名返回值result，函数内部声明一个变量i，defer指定一个延迟函数，最后返回变量i。延迟函数中递增result。
 - 参考答案： 函数输出2。函数的return语句并不是原子的，实际执行分为设置返回值–>ret，defer语句实际执行在返回前，即拥有defer的函数返回过程是：设置返回值–>执行defer–>ret。所以return语句先把result设置为i的值，即1，defer语句中又把result递增1，所以最终返回2。
-- 上面对于什么是原子的, 这个概念我不太理解, 后面着重学习, 设置返回值->执行defer->ret
+- 设置返回值->执行defer->ret
 
 ## 3. defer规则
 - Golang官方博客里总结了defer的行为规则，只有三条，我们围绕这三条进行说明。
+
 ### 3.1 规则一：延迟函数的参数在defer语句出现时就已经确定下来了
 - 官方给出一个例子，如下所示：
 ```go
@@ -94,7 +90,7 @@ func a() {
 
 #### 3.3.1 函数返回过程
 - 有一个事实必须要了解，关键字return不是一个原子操作，实际上return只代理汇编指令ret，即将跳转程序执行。比如语句return i，实际上分两步进行，即将i值存入栈中作为返回值，然后执行跳转，而defer的执行时机正是跳转前，所以说defer执行时还是有机会操作返回值的。
-- 关于主函数有不同的返回方式，但返回机制就如上机介绍所说，只要把return语句拆开都可以很好的理解，下面分别举例说明
+- 关于主函数有不同的返回方式，但返回机制就如上介绍所说，只要把return语句拆开都可以很好的理解，下面分别举例说明
 
 #### 3.3.2 主函数拥有匿名返回值，返回字面值
 - 一个主函数拥有一个匿名的返回值，返回时使用字面值，比如返回”1”、”2”、”Hello”这样的值，这种情况下defer语句是无法操作返回值的。
@@ -132,6 +128,7 @@ func foo() int {
     - return
 - 由于i是整型，会将值拷贝给anony，所以defer语句中修改i值，对函数返回值不造成影响。
 - 注意区分在返回值列表有名字和匿名的两种不同的case
+
 #### 3.3.4 主函数拥有具名返回值
 - 主函声明语句中带名字的返回值，会被初始化成一个局部变量，函数内部可以像使用局部变量一样使用该返回值。如果defer语句操作该返回值，可能会改变返回结果。
 - 一个影响函返回值的例子：
@@ -140,7 +137,6 @@ func foo() (ret int) {
     defer func() {
         ret++
     }()
-
     return 0
 }
 ```
@@ -194,7 +190,7 @@ func Dived(n int) {
 - 业务处理函数中只要使用了defer NoPanic()，那么就不会再有panic发生。
 - 关于是否应该使用recover接收异常，以及什么场景下使用等问题不在本节讨论范围内。 本节关注的是这种用法的一个变体，曾经出现在笔者经历的一个真实项目，在该变体下，recover再也无法接收异常。
 
-### 5.1recover使用误区
+### 5.1 recover使用误区
 - 在项目中，有众多的数据库更新操作，正常的更新操作需要提交，而失败的就需要回滚，如果异常分支比较多， 就会有很多重复的回滚代码，所以有人尝试了一个做法：即在defer中判断是否出现异常，有异常则回滚，否则提交。
 ```go
 func IsPanic() bool {
@@ -222,7 +218,7 @@ func UpdateTable() {
 - func IsPanic() bool 用来接收异常，返回值用来说明是否发生了异常。func UpdateTable()函数中，使用defer来判断最终应该提交还是回滚。
 - 上面代码初步看起来还算合理，但是此处的IsPanic()再也不会返回true，不是IsPanic()函数的问题，而是其调用的位置不对。
 
-### 5.2recover 失效的条件
+### 5.2 recover 失效的条件
 - 上面代码IsPanic()失效了，其原因是违反了recover的一个限制，导致recover()失效（永远返回nil）。
 - 以下三个条件会让recover()返回nil:
     - panic时指定的参数为nil；（一般panic语句如panic("xxx failed...")）
@@ -236,3 +232,4 @@ func UpdateTable() {
 - defer定义顺序与实际执行顺序相反
 - return不是原子操作，执行过程是: 保存返回值(若有)–>执行defer（若有）–>执行ret跳转
 - 申请资源后立即使用defer关闭资源是好习惯
+- 当出现panic语句的时候, 会先处理完defer栈, 再执行panic
