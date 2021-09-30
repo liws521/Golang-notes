@@ -1,6 +1,9 @@
 Go Modules
 === 
 
+## resource
+[李文周](https://www.liwenzhou.com/posts/Go/go_dependency/)
+
 ## 什么是Go Modules
 - Go modules 是 Go 语言中正式官宣的项目依赖解决方案，Go modules（前身为vgo）于 Go1.11 正式发布，在 Go1.14 已经准备好，并且可以用在生产上（ready for production）了，Go 官方也鼓励所有用户从其他依赖项管理工具迁移到 Go modules。
 - Go moudles 目前集成在 Go 的工具链中，只要安装了 Go，自然而然也就可以使用 Go moudles 了，而 Go modules 的出现也解决了在 Go1.11 前的几个常见争议问题：
@@ -370,3 +373,7 @@ https://www.golangroadmap.com/roadmap/gomodules/7.html
 Go modules 的成长和发展经历了一定的过程，如果你是刚接触的读者，直接基于 Go modules 的项目开始即可，如果既有老项目，那么是时候考虑切换过来了，Go1.14起已经准备就绪，并推荐你使用。
 
 https://www.golangroadmap.com/roadmap/gomodules/9.html
+
+
+# Meta
+- 在我的工程目录下go mod init 模块名, 就是把这个工程目录的路径相当于注册到GOPATH路径下了, 然后名称就是这个模块名, 这个项目里所有的路径都可以以这个模块名开始寻址了
